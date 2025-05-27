@@ -1,13 +1,29 @@
-// server/index.js
 import express from "express";
-import cors from "cors";
-import fetch from "node-fetch";
+import mongoose from "mongoose";
+import passport from "passport";
+import dotenv from "dotenv";
+import authRoutes from './routes/auth.js';
+import "./config/passport.js";
+import cors from 'cors';
+import verifyToken from './middleware/auth.js';
+
+dotenv.config();
 
 const app = express();
-const PORT = 5000;
 
 app.use(cors());
-app.use(express.json()); // Add this line to parse JSON bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
+
+app.get('/', (req, res) => {
+  res.send('Server is working correctly');
+});
+
+app.use('/api/auth', authRoutes);
+
+
+//search routes will be added here
 
 // Local drugs.json endpoint
 app.get("/api/drugs/local", (req, res) => {
@@ -54,10 +70,15 @@ app.post("/api/drugs", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch drug data" });
   }
 });
-// app.get('/api/drugs',(res,req)=>{
-//   res.json(drugs)
-// })
 
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(error => console.error('MongoDB connection error:', error));
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
