@@ -6,7 +6,7 @@ import { z } from 'zod';
 const ai = genkit({
   plugins: [
     googleAI({
-      apiKey: 'AIzaSyCcuBEHsGFwotQJes2zbZwiWdaOWYmsieM',
+      apiKey:process.env.GENKIT_ENV,
     }),
   ],
   model: gemini20Flash,
