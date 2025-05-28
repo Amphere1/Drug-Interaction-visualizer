@@ -9,6 +9,7 @@ import verifyToken from './middleware/auth.js';
 import { checkInteractions } from "./genkit/interactions.js";
 import fs from 'fs';
 import fetch from 'node-fetch';
+import bookmarkRoutes from './routes/bookmark.js'
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
 
 // Local drugs.json endpoint
 app.get("/api/drugs/local", (req, res) => {
