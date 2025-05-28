@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@genkit-ai/googleai": "^1.10.0",
+    "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -11,5 +12,15 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1"
   },
-  "type": "module"
+  "type": "module",
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend will be set up here",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
