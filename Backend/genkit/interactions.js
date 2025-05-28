@@ -2,7 +2,7 @@ import { gemini20Flash, googleAI } from '@genkit-ai/googleai';
 import { genkit } from 'genkit';
 import { z } from 'zod';
 
-// Initialize Genkit AI instance
+// Genkit AI instance
 const ai = genkit({
   plugins: [
     googleAI({
@@ -37,7 +37,7 @@ const InteractionSchema = z.object({
   ),
 });
 
-// Define the flow
+// flow
 export const checkInteractions = ai.defineFlow(
   {
     name: 'checkInteractions',
