@@ -131,9 +131,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   .catch(error => console.error('MongoDB connection error:', error));
 
 
-//commenting out the listen part as vercel does not support this
-
-/*const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});*/
+});
