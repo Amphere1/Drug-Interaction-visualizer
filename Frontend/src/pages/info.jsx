@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import drugsName from '../components/Assets/drugsNames.json';
+import jsPDF from 'jspdf';
 
 const DrugInfo = () => {
   const [query, setQuery] = useState('');
@@ -9,7 +10,8 @@ const DrugInfo = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Autosuggestion logic from local JSON
+  const infoRef = useRef(null);
+  
   React.useEffect(() => {
     if (query.length < 2) return setSuggestions([]);
     setSuggestions(
@@ -43,6 +45,42 @@ const DrugInfo = () => {
     }
   };
 
+  const exportPDF = () => {
+    const pdf = new jsPDF();
+    let y = 10;
+    pdf.setFontSize(18);
+    pdf.text('Drug Information', 14, y);
+    y += 10;
+    pdf.setFontSize(12);
+
+    fields.forEach(({ label, key }) => {
+      const value = formatValue(selectedDrug[key]);
+      const lines = pdf.splitTextToSize(`${label}: ${value}`, 180);
+      pdf.text(lines, 14, y);
+      y += lines.length * 7;
+      if (y > 270) {
+        pdf.addPage();
+        y = 10;
+      }
+    });
+
+    pdf.save(`${query || 'drug-info'}.pdf`);
+  };
+
+  const formatValue = (value) => Array.isArray(value) ? value.join(', ') : value || 'N/A';
+
+  const fields = [
+    { label: 'Generic Name', key: 'generic_name' },
+    { label: 'Brand Name', key: 'brand_name' },
+    { label: 'RXCUI', key: 'rxcui' },
+    { label: 'Purpose', key: 'purpose' },
+    { label: 'Dosage & Administration', key: 'dosage_and_administration' },
+    { label: 'Indications & Usage', key: 'indications_and_usage' },
+    { label: 'Active Ingredient', key: 'active_ingredient' },
+    { label: 'Inactive Ingredient', key: 'inactive_ingredient' },
+    { label: 'Storage & Handling', key: 'storage_and_handling' },
+  ];
+
   return (
     <div className="min-h-screen pt-24 px-4 sm:px-8 md:px-16 bg-gray-100">
       <motion.h1
@@ -67,6 +105,7 @@ const DrugInfo = () => {
         >
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+
               {/* Search icon SVG */}
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="7" />
@@ -112,18 +151,29 @@ const DrugInfo = () => {
       </div>
 
       {loading && <p className="text-center mt-6 text-purple-600">Loading...</p>}
-      {error && <p className="text-center mt-6 text-red-500">{error}</p>}      {selectedDrug && (
+      {error && <p className="text-center mt-6 text-red-500">{error}</p>}
+
+      {selectedDrug && (
         <motion.div
-          className="max-w-3xl mx-auto mt-10 space-y-6"
+          ref={infoRef}
+          className="max-w-3xl mx-auto mt-10 bg-white rounded-xl shadow-md p-6"
+
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+
           <div className="bg-purple-50 border border-purple-200 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
             <h2 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
               <span className="inline-block w-3 h-3 rounded-full bg-purple-600" />
               {selectedDrug.brand_name?.[0] || selectedDrug.generic_name?.[0] || "Drug Info"}
             </h2>
+            <button
+              onClick={exportPDF}
+              className="px-4 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700"
+            >
+              Export PDF
+            </button>
             
             <div className="grid gap-4">
               {/* Basic Info Card */}
@@ -189,4 +239,5 @@ const DrugInfo = () => {
     </div>
   );
 };
+
 export default DrugInfo;

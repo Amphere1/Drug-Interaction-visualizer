@@ -36,6 +36,7 @@ const Login = () => {
       // Redirect to dashboard or home
       navigate('/hero');
     } catch (err) {
+
       console.log(err);
       setError('Login failed. Please try again.');
     } finally {
