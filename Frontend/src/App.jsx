@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
@@ -53,8 +54,20 @@ function App() {
       <Footer />
     </div>
     </Router>
+=======
+import "./App.css";
+
+function App() {
+  return (
+    <div>
+      <h1 className="bg-amber-950">Hello world</h1>
+    </div>
+>>>>>>> 4085f4c8f0c3b358a013e2ab43fc4bf34be1a5e2
   );
 }
 
 export default App;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4085f4c8f0c3b358a013e2ab43fc4bf34be1a5e2
