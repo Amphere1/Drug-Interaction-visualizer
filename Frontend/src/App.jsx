@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-import './App.css';
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import FAQ from "./components/faq";
@@ -12,7 +11,7 @@ import ContactUs from "./components/contact-us";
 import AboutUs from "./components/about-us";
 import Visualizer from "./pages/drug";
 import DrugInfo from './pages/info';
-import Bookmarks from './pages/bookmarks';
+import Bookmarks from './pages/Bookmarks';
 
 function App() {
   return (
@@ -54,20 +53,7 @@ function App() {
       <Footer />
     </div>
     </Router>
-=======
-import "./App.css";
-
-function App() {
-  return (
-    <div>
-      <h1 className="bg-amber-950">Hello world</h1>
-    </div>
->>>>>>> 4085f4c8f0c3b358a013e2ab43fc4bf34be1a5e2
   );
 }
 
 export default App;
-<<<<<<< HEAD
-
-=======
->>>>>>> 4085f4c8f0c3b358a013e2ab43fc4bf34be1a5e2

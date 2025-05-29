@@ -339,10 +339,10 @@ const Visualizer = () => {
               </button>
             </div>
 
-            {['highRisk', 'moderateRisk', 'lowRisk'].map((risk) => (
+           {['highRisk', 'moderateRisk', 'lowRisk'].map((risk) => (
               result.interactions[risk]?.length > 0 && (
-                <div key={risk} className="mb-6">
-                  <h3 className="text-xl font-bold flex items-center gap-2 mb-2">
+                <div key={risk} className="mb-8">
+                  <h3 className="text-xl font-bold flex items-center gap-2 mb-4">
                     <span className={`inline-block w-3 h-3 rounded-full ${
                       risk === 'highRisk' ? 'bg-red-600' :
                       risk === 'moderateRisk' ? 'bg-yellow-400' :
@@ -356,17 +356,29 @@ const Visualizer = () => {
                       {risk.replace('Risk', ' Risk')} Interactions
                     </span>
                   </h3>
-                  <ul className={`list-disc list-inside space-y-2 ${
-                    risk === 'highRisk' ? 'text-red-700' :
-                    risk === 'moderateRisk' ? 'text-yellow-700' :
-                    'text-green-700'
-                  }`}>
+                  <div className="grid gap-4">
                     {result.interactions[risk].map((item, idx) => (
-                      <li key={idx}>
-                        <strong>{item.drug1}</strong> + <strong>{item.drug2}</strong>: {item.reason}
-                      </li>
+                      <div
+                        key={idx}
+                        className={`rounded-xl p-4 shadow-md transition border-l-8 ${
+                          risk === 'highRisk' ? 'border-red-600 bg-red-50' :
+                          risk === 'moderateRisk' ? 'border-yellow-400 bg-yellow-50' :
+                          'border-green-500 bg-green-50'
+                        }`}
+                      >
+                        <h4 className="text-lg font-semibold">
+                          {item.drug1} + {item.drug2}
+                        </h4>
+                        <p className={`text-sm mt-1 ${
+                          risk === 'highRisk' ? 'text-red-700' :
+                          risk === 'moderateRisk' ? 'text-yellow-700' :
+                          'text-green-700'
+                        }`}>
+                          {item.reason}
+                        </p>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )
             ))}

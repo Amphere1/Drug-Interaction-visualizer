@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import drugsName from '../components/Assets/drugsNames.json';
+import jsPDF from 'jspdf';
 
 const DrugInfo = () => {
   const [query, setQuery] = useState('');
@@ -8,8 +9,8 @@ const DrugInfo = () => {
   const [selectedDrug, setSelectedDrug] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const infoRef = useRef(null);
 
-  // Autosuggestion logic from local JSON
   React.useEffect(() => {
     if (query.length < 2) return setSuggestions([]);
     setSuggestions(
@@ -43,6 +44,42 @@ const DrugInfo = () => {
     }
   };
 
+  const exportPDF = () => {
+    const pdf = new jsPDF();
+    let y = 10;
+    pdf.setFontSize(18);
+    pdf.text('Drug Information', 14, y);
+    y += 10;
+    pdf.setFontSize(12);
+
+    fields.forEach(({ label, key }) => {
+      const value = formatValue(selectedDrug[key]);
+      const lines = pdf.splitTextToSize(`${label}: ${value}`, 180);
+      pdf.text(lines, 14, y);
+      y += lines.length * 7;
+      if (y > 270) {
+        pdf.addPage();
+        y = 10;
+      }
+    });
+
+    pdf.save(`${query || 'drug-info'}.pdf`);
+  };
+
+  const formatValue = (value) => Array.isArray(value) ? value.join(', ') : value || 'N/A';
+
+  const fields = [
+    { label: 'Generic Name', key: 'generic_name' },
+    { label: 'Brand Name', key: 'brand_name' },
+    { label: 'RXCUI', key: 'rxcui' },
+    { label: 'Purpose', key: 'purpose' },
+    { label: 'Dosage & Administration', key: 'dosage_and_administration' },
+    { label: 'Indications & Usage', key: 'indications_and_usage' },
+    { label: 'Active Ingredient', key: 'active_ingredient' },
+    { label: 'Inactive Ingredient', key: 'inactive_ingredient' },
+    { label: 'Storage & Handling', key: 'storage_and_handling' },
+  ];
+
   return (
     <div className="min-h-screen pt-24 px-4 sm:px-8 md:px-16 bg-gray-100">
       <motion.h1
@@ -67,7 +104,6 @@ const DrugInfo = () => {
         >
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-              {/* Search icon SVG */}
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="7" />
                 <line x1="16.5" y1="16.5" x2="21" y2="21" />
@@ -116,55 +152,35 @@ const DrugInfo = () => {
 
       {selectedDrug && (
         <motion.div
+          ref={infoRef}
           className="max-w-3xl mx-auto mt-10 bg-white rounded-xl shadow-md p-6"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-2xl font-semibold text-purple-700 mb-4">
-            {selectedDrug.brand_name?.[0] || selectedDrug.generic_name?.[0] || "Drug Info"}
-          </h2>
-          <div className="space-y-2 text-blue-900">
-            <p>
-              <strong>Generic Name:</strong>{" "}
-              {Array.isArray(selectedDrug.generic_name) ? selectedDrug.generic_name.join(", ") : selectedDrug.generic_name || "N/A"}
-            </p>
-            <p>
-              <strong>Brand Name:</strong>{" "}
-              {Array.isArray(selectedDrug.brand_name) ? selectedDrug.brand_name.join(", ") : selectedDrug.brand_name || "N/A"}
-            </p>
-            <p>
-              <strong>RXCUI:</strong>{" "}
-              {Array.isArray(selectedDrug.rxcui) ? selectedDrug.rxcui.join(", ") : selectedDrug.rxcui || "N/A"}
-            </p>
-            <p>
-              <strong>Purpose:</strong>{" "}
-              {Array.isArray(selectedDrug.purpose) ? selectedDrug.purpose.join(" ") : selectedDrug.purpose || "N/A"}
-            </p>
-            <p>
-              <strong>Dosage & Administration:</strong>{" "}
-              {Array.isArray(selectedDrug.dosage_and_administration) ? selectedDrug.dosage_and_administration.join(" ") : selectedDrug.dosage_and_administration || "N/A"}
-            </p>
-            <p>
-              <strong>Indications & Usage:</strong>{" "}
-              {Array.isArray(selectedDrug.indications_and_usage) ? selectedDrug.indications_and_usage.join(" ") : selectedDrug.indications_and_usage || "N/A"}
-            </p>
-            <p>
-              <strong>Active Ingredient:</strong>{" "}
-              {Array.isArray(selectedDrug.active_ingredient) ? selectedDrug.active_ingredient.join(", ") : selectedDrug.active_ingredient || "N/A"}
-            </p>
-            <p>
-              <strong>Inactive Ingredient:</strong>{" "}
-              {Array.isArray(selectedDrug.inactive_ingredient) ? selectedDrug.inactive_ingredient.join(", ") : selectedDrug.inactive_ingredient || "N/A"}
-            </p>
-            <p>
-              <strong>Storage & Handling:</strong>{" "}
-              {Array.isArray(selectedDrug.storage_and_handling) ? selectedDrug.storage_and_handling.join(" ") : selectedDrug.storage_and_handling || "N/A"}
-            </p>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold text-purple-700">
+              {selectedDrug.brand_name?.[0] || selectedDrug.generic_name?.[0] || "Drug Info"}
+            </h2>
+            <button
+              onClick={exportPDF}
+              className="px-4 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700"
+            >
+              Export PDF
+            </button>
+          </div>
+          <div className="space-y-4">
+            {fields.map(({ label, key }) => (
+              <div key={key} className="bg-gray-50 p-4 rounded-lg border shadow-sm">
+                <h3 className="font-semibold text-gray-800 mb-1">{label}</h3>
+                <p className="text-sm text-gray-700">{formatValue(selectedDrug[key])}</p>
+              </div>
+            ))}
           </div>
         </motion.div>
       )}
     </div>
   );
 };
+
 export default DrugInfo;
