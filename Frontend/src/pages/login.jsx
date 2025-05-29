@@ -36,6 +36,8 @@ const Login = () => {
       // Redirect to dashboard or home
       navigate('/hero');
     } catch (err) {
+
+      console.log(err);
       setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
@@ -86,7 +88,7 @@ const Login = () => {
           <p className="text-sm">
             Don't have an account?{' '}
             <button
-              onClick={() => navigate('/sign-up')}
+              onClick={() => navigate('/signup')}
               className="text-blue-600 hover:underline font-semibold"
             >
               Sign Up

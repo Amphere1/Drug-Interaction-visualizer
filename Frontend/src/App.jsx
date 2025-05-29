@@ -1,6 +1,7 @@
-
+import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
+import ProtectedRoute from './components/ProtectedRoute';
 import FAQ from "./components/faq";
 import Footer from "./components/footer";
 import HeroSection from "./components/hero-page";
@@ -45,10 +46,21 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/visualizer" element={<Visualizer />} />
-        <Route path="/drugs" element={<DrugInfo />} />
-        <Route path="/bookmark" element={<Bookmarks />} />
+        <Route path="/login" element={<Login />} />        <Route path="/visualizer" element={
+          <ProtectedRoute>
+            <Visualizer />
+          </ProtectedRoute>
+        } />
+        <Route path="/drugs" element={
+          <ProtectedRoute>
+            <DrugInfo />
+          </ProtectedRoute>
+        } />
+        <Route path="/bookmark" element={
+          <ProtectedRoute>
+            <Bookmarks />
+          </ProtectedRoute>
+        } />
       </Routes>
       <Footer />
     </div>
@@ -57,3 +69,4 @@ function App() {
 }
 
 export default App;
+

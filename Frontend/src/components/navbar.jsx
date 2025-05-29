@@ -1,22 +1,39 @@
 // Navbar.jsx
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import logo from './Assets/logo.png'; 
+import logo from "./Assets/logo.png";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
 const Navbar = () => {
   const location = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Visualizer', path: '/visualizer' },
-    { name: 'Drugs', path: '/drugs' },
-    { name: 'Bookmarks', path: '/bookmark' },
-    { name: 'FAQ', path: '/faq' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'Sign Up', path: '/signup' },
-    { name: 'Login', path: '/login' },
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about" },
+    { name: "Visualizer", path: "/visualizer" },
+    { name: "Drugs", path: "/drugs" },
+    { name: "Bookmarks", path: "/bookmark" },
+    { name: "FAQ", path: "/faq" },
+    { name: "Contact", path: "/contact" },
+    ...(isLoggedIn
+      ? [] // If logged in, don't show login/signup
+      : [
+          { name: "Sign Up", path: "/signup" },
+          { name: "Login", path: "/login" },
+        ]),
   ];
 
   return (
@@ -38,15 +55,15 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <motion.div
                 key={link.path}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <Link
                   to={link.path}
-                  className={`px-3 py-1 rounded-lg transition-colors duration-200 ${
+                  className={`text-sm font-medium transition-colors duration-200 ${
                     location.pathname === link.path
-                      ? 'bg-blue-100 text-blue-700 font-semibold'
-                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                      ? "text-blue-700"
+                      : "text-gray-600 hover:text-blue-600"
                   }`}
                 >
                   {link.name}
@@ -69,12 +86,32 @@ const Navbar = () => {
               strokeWidth={2}
             >
               {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 8h16M4 16h16"
+                />
               )}
             </svg>
           </button>
+
+          {/* Logout button (desktop only) */}
+          {isLoggedIn && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLogout}
+              className="hidden md:inline-block text-sm font-medium text-white bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              Logout
+            </motion.button>
+          )}
         </div>
       </div>
 
@@ -83,7 +120,7 @@ const Navbar = () => {
         {menuOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden bg-white shadow-lg rounded-b-xl overflow-hidden"
           >
@@ -94,14 +131,29 @@ const Navbar = () => {
                   to={link.path}
                   className={`block px-3 py-2 rounded-lg transition-colors duration-200 ${
                     location.pathname === link.path
-                      ? 'bg-blue-100 text-blue-700 font-semibold'
-                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                   }`}
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.name}
                 </Link>
               ))}
+
+              {/* Logout in mobile menu */}
+              {isLoggedIn && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="text-sm font-medium text-white bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Logout
+                </motion.button>
+              )}
             </div>
           </motion.div>
         )}

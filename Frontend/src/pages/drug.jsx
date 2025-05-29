@@ -337,51 +337,48 @@ const Visualizer = () => {
                   ? 'Bookmarked!'
                   : 'Bookmark This Interaction'}
               </button>
-            </div>
-
-           {['highRisk', 'moderateRisk', 'lowRisk'].map((risk) => (
-              result.interactions[risk]?.length > 0 && (
-                <div key={risk} className="mb-8">
-                  <h3 className="text-xl font-bold flex items-center gap-2 mb-4">
-                    <span className={`inline-block w-3 h-3 rounded-full ${
-                      risk === 'highRisk' ? 'bg-red-600' :
-                      risk === 'moderateRisk' ? 'bg-yellow-400' :
-                      'bg-green-500'
-                    }`} />
-                    <span className={`text-lg font-semibold ${
-                      risk === 'highRisk' ? 'text-red-600' :
-                      risk === 'moderateRisk' ? 'text-yellow-600' :
-                      'text-green-600'
+            </div>            <div className="space-y-6 mt-6">
+              {['highRisk', 'moderateRisk', 'lowRisk'].map((risk) => (
+                result.interactions[risk]?.length > 0 && (
+                  <div key={risk} className={`w-full rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl ${
+                    risk === 'highRisk' ? 'bg-red-50 border border-red-200' :
+                    risk === 'moderateRisk' ? 'bg-yellow-50 border border-yellow-200' :
+                    'bg-green-50 border border-green-200'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className={`inline-block w-3 h-3 rounded-full ${
+                        risk === 'highRisk' ? 'bg-red-600' :
+                        risk === 'moderateRisk' ? 'bg-yellow-400' :
+                        'bg-green-500'
+                      }`} />
+                      <h3 className={`text-lg font-bold ${
+                        risk === 'highRisk' ? 'text-red-600' :
+                        risk === 'moderateRisk' ? 'text-yellow-600' :
+                        'text-green-600'
+                      }`}>
+                        {risk.replace('Risk', ' Risk')} Interactions
+                      </h3>
+                    </div>
+                    <div className={`space-y-3 ${
+                      risk === 'highRisk' ? 'text-red-700' :
+                      risk === 'moderateRisk' ? 'text-yellow-700' :
+                      'text-green-700'
                     }`}>
-                      {risk.replace('Risk', ' Risk')} Interactions
-                    </span>
-                  </h3>
-                  <div className="grid gap-4">
-                    {result.interactions[risk].map((item, idx) => (
-                      <div
-                        key={idx}
-                        className={`rounded-xl p-4 shadow-md transition border-l-8 ${
-                          risk === 'highRisk' ? 'border-red-600 bg-red-50' :
-                          risk === 'moderateRisk' ? 'border-yellow-400 bg-yellow-50' :
-                          'border-green-500 bg-green-50'
-                        }`}
-                      >
-                        <h4 className="text-lg font-semibold">
-                          {item.drug1} + {item.drug2}
-                        </h4>
-                        <p className={`text-sm mt-1 ${
-                          risk === 'highRisk' ? 'text-red-700' :
-                          risk === 'moderateRisk' ? 'text-yellow-700' :
-                          'text-green-700'
-                        }`}>
-                          {item.reason}
-                        </p>
-                      </div>
-                    ))}
+                      {result.interactions[risk].map((item, idx) => (
+                        <div key={idx} className="p-3 bg-white rounded-lg shadow-sm">
+                          <div className="font-semibold mb-1">
+                            {item.drug1} + {item.drug2}
+                          </div>
+                          <div className="text-sm opacity-90">
+                            {item.reason}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )
-            ))}
+                )
+              ))}
+            </div>
           </motion.div>
         )}
       </div>

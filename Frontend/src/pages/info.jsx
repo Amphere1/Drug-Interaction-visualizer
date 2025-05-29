@@ -9,8 +9,9 @@ const DrugInfo = () => {
   const [selectedDrug, setSelectedDrug] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const infoRef = useRef(null);
 
+  const infoRef = useRef(null);
+  
   React.useEffect(() => {
     if (query.length < 2) return setSuggestions([]);
     setSuggestions(
@@ -104,6 +105,8 @@ const DrugInfo = () => {
         >
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+
+              {/* Search icon SVG */}
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="7" />
                 <line x1="16.5" y1="16.5" x2="21" y2="21" />
@@ -154,12 +157,15 @@ const DrugInfo = () => {
         <motion.div
           ref={infoRef}
           className="max-w-3xl mx-auto mt-10 bg-white rounded-xl shadow-md p-6"
+
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-purple-700">
+
+          <div className="bg-purple-50 border border-purple-200 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+            <h2 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
+              <span className="inline-block w-3 h-3 rounded-full bg-purple-600" />
               {selectedDrug.brand_name?.[0] || selectedDrug.generic_name?.[0] || "Drug Info"}
             </h2>
             <button
@@ -168,14 +174,65 @@ const DrugInfo = () => {
             >
               Export PDF
             </button>
-          </div>
-          <div className="space-y-4">
-            {fields.map(({ label, key }) => (
-              <div key={key} className="bg-gray-50 p-4 rounded-lg border shadow-sm">
-                <h3 className="font-semibold text-gray-800 mb-1">{label}</h3>
-                <p className="text-sm text-gray-700">{formatValue(selectedDrug[key])}</p>
+            
+            <div className="grid gap-4">
+              {/* Basic Info Card */}
+              <div className="bg-white rounded-lg shadow-sm p-4 border border-purple-100">
+                <h3 className="text-lg font-semibold text-purple-600 mb-3">Basic Information</h3>
+                <div className="space-y-2">
+                  <div className="p-2 bg-purple-50 rounded">
+                    <strong className="text-purple-700">Generic Name: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.generic_name) ? selectedDrug.generic_name.join(", ") : selectedDrug.generic_name || "N/A"}</span>
+                  </div>
+                  <div className="p-2">
+                    <strong className="text-purple-700">Brand Name: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.brand_name) ? selectedDrug.brand_name.join(", ") : selectedDrug.brand_name || "N/A"}</span>
+                  </div>
+                  <div className="p-2 bg-purple-50 rounded">
+                    <strong className="text-purple-700">RXCUI: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.rxcui) ? selectedDrug.rxcui.join(", ") : selectedDrug.rxcui || "N/A"}</span>
+                  </div>
+                </div>
               </div>
-            ))}
+
+              {/* Usage Card */}
+              <div className="bg-white rounded-lg shadow-sm p-4 border border-purple-100">
+                <h3 className="text-lg font-semibold text-purple-600 mb-3">Usage Information</h3>
+                <div className="space-y-2">
+                  <div className="p-2 bg-purple-50 rounded">
+                    <strong className="text-purple-700">Purpose: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.purpose) ? selectedDrug.purpose.join(" ") : selectedDrug.purpose || "N/A"}</span>
+                  </div>
+                  <div className="p-2">
+                    <strong className="text-purple-700">Dosage & Administration: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.dosage_and_administration) ? selectedDrug.dosage_and_administration.join(" ") : selectedDrug.dosage_and_administration || "N/A"}</span>
+                  </div>
+                  <div className="p-2 bg-purple-50 rounded">
+                    <strong className="text-purple-700">Indications & Usage: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.indications_and_usage) ? selectedDrug.indications_and_usage.join(" ") : selectedDrug.indications_and_usage || "N/A"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ingredients Card */}
+              <div className="bg-white rounded-lg shadow-sm p-4 border border-purple-100">
+                <h3 className="text-lg font-semibold text-purple-600 mb-3">Ingredients & Storage</h3>
+                <div className="space-y-2">
+                  <div className="p-2 bg-purple-50 rounded">
+                    <strong className="text-purple-700">Active Ingredient: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.active_ingredient) ? selectedDrug.active_ingredient.join(", ") : selectedDrug.active_ingredient || "N/A"}</span>
+                  </div>
+                  <div className="p-2">
+                    <strong className="text-purple-700">Inactive Ingredient: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.inactive_ingredient) ? selectedDrug.inactive_ingredient.join(", ") : selectedDrug.inactive_ingredient || "N/A"}</span>
+                  </div>
+                  <div className="p-2 bg-purple-50 rounded">
+                    <strong className="text-purple-700">Storage & Handling: </strong>
+                    <span className="text-purple-900">{Array.isArray(selectedDrug.storage_and_handling) ? selectedDrug.storage_and_handling.join(" ") : selectedDrug.storage_and_handling || "N/A"}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       )}

@@ -38,6 +38,7 @@ const SignUp = () => {
       // Redirect to login or dashboard
       navigate('/login');
     } catch (err) {
+      console.log(err);
       setError('Signup failed. Please try again.');
     } finally {
       setLoading(false);

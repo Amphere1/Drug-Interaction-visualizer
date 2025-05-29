@@ -41,10 +41,15 @@ const HeroSection = () => {
           transition={{ delay: 0.3, duration: 0.8 }}
         >
           Explore the effects and connections between medications in an intuitive and interactive way.
-        </motion.p>
-
-        <motion.button
-          onClick={() => navigate('/visualizer')}
+        </motion.p>        <motion.button
+          onClick={() => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+              navigate('/login');
+            } else {
+              navigate('/visualizer');
+            }
+          }}
           className="mt-4 w-fit bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all text-lg"
           whileHover={{ scale: 1.07 }}
           whileTap={{ scale: 0.97 }}
